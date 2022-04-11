@@ -9,7 +9,7 @@ const VehicleSchema = z.object({
     required_error: 'Year is required',
     invalid_type_error: 'Year must be a number',
   }).min(1900, { message: 'Year cannot be less than 1900' })
-    .max(2022, { message: 'cannot be bigger than 2022' }),
+    .max(2022, { message: 'Year cannot be bigger than 2022' }),
   color: z.string({
     required_error: 'Color is required',
     invalid_type_error: 'Color must be a string',

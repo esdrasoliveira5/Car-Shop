@@ -1,4 +1,4 @@
-describe.skip('03 - Crie a interface Car a partir da Interface Vehicle', () => {
+describe('03 - Crie a interface Car a partir da Interface Vehicle', () => {
   it('O tipo Car estende a Interface Vehicle', () => {
     expect('Cars/vehicleInterface').toCompile();
   });
