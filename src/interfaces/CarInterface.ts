@@ -15,3 +15,5 @@ const CarSchema = z.object({
 });
 
 export type Car = Vehicle & z.infer<typeof CarSchema>;
+
+export { CarSchema };
