@@ -4,6 +4,7 @@ import {
   ResponseCreate,
   ResponseError,
 } from '../interfaces/ResponseInterfaces';
+import { VehicleSchema } from '../interfaces/VehicleInterface';
 import CarModel from '../models/CarModel';
 
 class CarService extends Service<Car> {
@@ -13,9 +14,13 @@ class CarService extends Service<Car> {
 
   create = async (obj: Car):
   Promise<ResponseCreate<Car> | ResponseError> => {
-    const parsed = CarSchema.safeParse(obj);
-    if (!parsed.success) {
-      return { status: 400, response: { error: parsed.error } };
+    const parsedCar = CarSchema.safeParse(obj);
+    const parsedVehicle = VehicleSchema.safeParse(obj);
+    if (!parsedCar.success) {
+      return { status: 400, response: { error: parsedCar.error } };
+    }
+    if (!parsedVehicle.success) {
+      return { status: 400, response: { error: parsedVehicle.error } };
     }
     const response = await this.model.create(obj);
     if (response === null) {
