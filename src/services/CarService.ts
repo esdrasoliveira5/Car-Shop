@@ -3,6 +3,7 @@ import { Car, CarSchema } from '../interfaces/CarInterface';
 import {
   ResponseCreate,
   ResponseError,
+  ResponseRead,
 } from '../interfaces/ResponseInterfaces';
 import { VehicleSchema } from '../interfaces/VehicleInterface';
 import CarModel from '../models/CarModel';
@@ -27,6 +28,14 @@ class CarService extends Service<Car> {
       return { status: 500, response: { error: this.error.internal } };
     }
     return { status: 201, response };
+  };
+
+  read = async (): Promise<ResponseError | ResponseRead<Car>> => {
+    const response = await this.model.read();
+    if (response === undefined) {
+      return { status: 500, response: { error: this.error.internal } };
+    }
+    return { status: 200, response };
   };
 }
 

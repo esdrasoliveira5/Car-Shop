@@ -2,8 +2,8 @@ import { Model } from '../interfaces/ModelInterface';
 import {
   ResponseCreate,
   ResponseError,
+  ResponseRead,
   // ResponseDelete,
-  // ResponseRead,
   // ResponseReadOne,
   // ResponseUpdate,
 } from '../interfaces/ResponseInterfaces';
@@ -35,7 +35,7 @@ abstract class Service<T> {
 
   abstract create(obj: T): Promise<ResponseCreate<T> | ResponseError>;
 
-  // abstract read(): Promise<ResponseRead<T> | ResponseError>;
+  abstract read(): Promise<ResponseRead<T> | ResponseError>;
 
   // abstract readOne(id: string): Promise<ResponseReadOne<T> | ResponseError>;
 
