@@ -31,7 +31,7 @@ abstract class Service<T> {
 
   protected status = StatusCodes;
 
-  constructor(protected model: Model<T>) {}
+  constructor(public model: Model<T>) {}
 
   abstract create(obj: T): Promise<ResponseCreate<T> | ResponseError>;
 

@@ -23,7 +23,7 @@ class CarService extends Service<Car> {
       return { status: 400, response: { error: parsedVehicle.error } };
     }
     const response = await this.model.create(obj);
-    if (response === null) {
+    if (response === undefined) {
       return { status: 500, response: { error: this.error.internal } };
     }
     return { status: 201, response };

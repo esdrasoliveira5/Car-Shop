@@ -1,17 +1,11 @@
-// template para criação dos testes de cobertura da camada de controller
-
-
-import mongoose from 'mongoose';
+import { Request, Response } from 'express';
 import * as sinon from 'sinon';
 import chai from 'chai';
-import chaiHttp = require('chai-http');
-import CarModel from '../../../models/CarModel';
-import CarService from '../../../services/CarService';
 import CarController from '../../../controllers/CarController';
-import App from '../../../app';
 const { expect } = chai;
-const service = new CarService();
-const app = new App();
+const controller = new CarController();
+const request = {} as Request;
+const response = {} as Response;
 
 describe('Testa o controller Car', () => {
   describe('Se os dados estiverem corretos', () => {
@@ -28,31 +22,25 @@ describe('Testa o controller Car', () => {
     }
   
     before(async () => {
+      request.body = payloadCar.response
+      response.status = sinon.stub().returns(200)
+      response.json = sinon.stub().returns({ 
+
+      })
       sinon
-        .stub(service, 'create')
+        .stub(controller.service, 'create')
         .resolves(payloadCar);
     });
   
     after(()=>{
-      (service.create as sinon.SinonStub).restore();
+      sinon.restore();
     })
   
     it('Retorna o status 200', async () => {
-      const response = await chai
-      .request(app)
-      .get('/cars')
-      .set('X-API-Key', 'foobar')
-      .send({
-        "model": "Ferrari Maranello",
-        "year": 1963,
-        "color": "red",
-        "buyValue": 3500000,
-        "seatsQty": 2,
-        "doorsQty": 2
-      })
-      console.log(response);
+      const responseController = await controller.create(request, response)
+      console.log(responseController);
       
-      expect(response).to.have.status(201);
+      expect(response).to.be.status(201);
     });
   })
 });

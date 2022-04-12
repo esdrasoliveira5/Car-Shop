@@ -5,7 +5,7 @@ import Service from '../services';
 abstract class Controller<T> {
   abstract route: string;
 
-  constructor(protected service: Service<T>) {}
+  constructor(public service: Service<T>) {}
 
   abstract create(req: Request, res: Response): Promise<typeof res>;
 }

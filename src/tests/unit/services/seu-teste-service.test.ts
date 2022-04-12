@@ -1,46 +1,76 @@
-// import { expect } from 'chai';
-// import mongoose from 'mongoose';
-
-import mongoose from 'mongoose';
 import * as sinon from 'sinon';
 import chai from 'chai';
-import chaiHttp = require('chai-http');
-import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
 const { expect } = chai;
-const model = new CarModel();
 const service = new CarService();
 
-describe('Testa o service Car', () => {
-  describe('Se os dados estiverem corretos', () => {
-    const payloadCar = {
-      model: "Ferrari Maranello",
-      year: 1963,
-      color: "red",
-      buyValue: 3500000,
-      seatsQty: 2,
-      doorsQty: 2,
-    }
-    before(async () => {
-      sinon
-        .stub(model, 'create')
-        .resolves(payloadCar);
-    });
-  
-    after(()=>{
-      (model.create as sinon.SinonStub).restore();
-    })
-  
-    it('Retorna carro criado no banco de dados', async () => {
-      const response = await service.create({
+describe('Test CarServices', () => {
+  describe('method create', () => {
+    describe('if success', () => {
+      const payloadCar = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
         buyValue: 3500000,
         seatsQty: 2,
         doorsQty: 2,
+        _id: '123'
+      }
+      before(async () => {
+        sinon
+          .stub(service.model, 'create')
+          .resolves(payloadCar);
+      });
+    
+      after(()=>{
+        sinon.restore();
       })
-      expect(response).to.be.equal(payloadCar);
+    
+      it('return a object with status 201 and the car saved in the database', async () => {
+        const response = await service.create({
+          model: "Ferrari Maranello",
+          year: 1963,
+          color: "red",
+          buyValue: 3500000,
+          seatsQty: 2,
+          doorsQty: 2,
+        })
+        expect(response).to.be.deep.equal({ status: 201, response: payloadCar });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(service.model, 'create')
+          .resolves(undefined);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if one of the data is wrong', async () => {
+        const response = await service.create({
+          model: "Ferrari Maranello",
+          year: 1963,
+          color: '',
+          buyValue: 3500000,
+          seatsQty: 2,
+          doorsQty: 2,
+        })
+        expect(response.status).to.be.deep.equal(400);
+      });
+      it('return an object with status 500 and an error message if the db fail to create a document', async () => {
+        const response = await service.create({
+          model: "Ferrari Maranello",
+          year: 1963,
+          color: 'red',
+          buyValue: 3500000,
+          seatsQty: 2,
+          doorsQty: 2,
+        })
+        expect(response.status).to.be.deep.equal(500);
+      });
     });
   })
 });
