@@ -15,8 +15,21 @@ enum ControllerErrors {
   badRequest = 'Bad request',
 }
 
+enum StatusCodes {
+  OK = 200,
+  CREATED,
+  NO_CONTENT = 204,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED,
+  NOT_FOUND = 404,
+  INVALID_FORMAT = 422,
+  INTERNAL_SERVER_ERROR = 500,
+}
+
 abstract class Service<T> {
   protected error = ControllerErrors;
+
+  protected status = StatusCodes;
 
   constructor(protected model: Model<T>) {}
 
