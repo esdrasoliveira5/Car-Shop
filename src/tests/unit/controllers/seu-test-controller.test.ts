@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as sinon from 'sinon';
+import Sinon, * as sinon from 'sinon';
 import chai from 'chai';
 import CarController from '../../../controllers/CarController';
 const { expect } = chai;
@@ -23,10 +23,9 @@ describe('Testa o controller Car', () => {
   
     before(async () => {
       request.body = payloadCar.response
-      response.status = sinon.stub().returns(200)
-      response.json = sinon.stub().returns({ 
-
-      })
+      response.status = sinon.stub().returns(response)
+      response.json = sinon.stub()
+      
       sinon
         .stub(controller.service, 'create')
         .resolves(payloadCar);
@@ -37,10 +36,9 @@ describe('Testa o controller Car', () => {
     })
   
     it('Retorna o status 200', async () => {
-      const responseController = await controller.create(request, response)
-      console.log(responseController);
+      await controller.create(request, response);
       
-      expect(response).to.be.status(201);
+      expect((response.status as sinon.SinonStub).calledWith(200))
     });
   })
 });
