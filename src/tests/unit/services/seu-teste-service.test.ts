@@ -246,7 +246,7 @@ describe('2 - Test CarServices', () => {
       });
     });
   });
-  describe.only('2.5 - method delete', () => {
+  describe('2.5 - method delete', () => {
     describe('if success', () => {
       const payloadCar = {
         model: "Ferrari Maranello",
