@@ -2,6 +2,7 @@ import Service from '.';
 import { Car } from '../interfaces/CarInterface';
 import {
   ResponseCreate,
+  ResponseDelete,
   ResponseError,
   ResponseRead,
   ResponseReadOne,
@@ -73,6 +74,21 @@ class CarService extends Service<Car> {
       };
     }
     return { status: this.validation.status.OK, response };
+  };
+
+  delete = async (id: string):
+  Promise<ResponseError | ResponseDelete> => {
+    const validationId = this.validation.idValidations(id);
+    if (validationId) return validationId;
+
+    const response = await this.model.delete(id);
+    if (response === null) {
+      return { 
+        status: this.validation.status.NOT_FOUND,
+        response: { error: this.validation.error.notFound },
+      };
+    }
+    return { status: this.validation.status.NO_CONTENT, response: [] };
   };
 }
 

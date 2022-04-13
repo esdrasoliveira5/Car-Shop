@@ -1,10 +1,10 @@
 import { ZodError } from 'zod';
 
-type Status = {
+export type Status = {
   status: number;
 };
 
-type Error = {
+export type Error = {
   error: ZodError | string;
 };
 
@@ -28,6 +28,6 @@ export interface ResponseUpdate<T> extends Status {
   response: T
 }
 
-export interface ResponseDelete<T> extends Status {
-  response: T
+export interface ResponseDelete extends Status {
+  response: []
 }

@@ -9,13 +9,13 @@ abstract class MongoModel<T> implements Model<T> {
   read = async (): Promise<T[]> => this.model.find();
 
   readOne = async (id: string): Promise<T | null> =>
-    this.model.findOne({ _id: id });
+    this.model.findById(id);
   
   update = async (id: string, obj: T): Promise<T | null> =>
     this.model.findByIdAndUpdate(id, { ...obj }, { new: true });
 
   delete = async (id:string): Promise<T | null> =>
-    this.model.remove({ _id: id });
+    this.model.findByIdAndDelete(id);
 }
 
 export default MongoModel;

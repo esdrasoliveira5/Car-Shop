@@ -140,7 +140,7 @@ describe('3 - Test CarModel', () => {
       
       before(() => {
         sinon
-          .stub(carModel.model, 'findOne')
+          .stub(carModel.model, 'findById')
           .resolves(payload as never);
       });
     
@@ -157,7 +157,7 @@ describe('3 - Test CarModel', () => {
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(carModel.model, 'find')
+          .stub(carModel.model, 'findById')
           .resolves(undefined);
       });
     
@@ -166,7 +166,7 @@ describe('3 - Test CarModel', () => {
       });
     
       it('return undefined', async () => {
-        const response = await carModel.read();
+        const response = await carModel.readOne('6254c0411954dcc064d02fd1');
   
         expect(response).to.be.equal(undefined);
       });
@@ -220,6 +220,53 @@ describe('3 - Test CarModel', () => {
     
       it('return undefined', async () => {
         const response = await carModel.update('6254c0411954dcc064d02fd1', payload);
+  
+        expect(response).to.be.equal(null);
+      });
+    });
+  });
+  describe('3.5 - method delete', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Ferrari Maranello",
+        year: 1963,
+        color: "red",
+        buyValue: 3500000,
+        seatsQty: 2,
+        doorsQty: 2,
+        _id: '6254c0411954dcc064d02fd1',
+      };
+
+      
+      before(() => {
+        sinon
+          .stub(carModel.model, 'findByIdAndDelete')
+          .resolves(payload as never);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('delete the car created in the database', async () => {
+        const response = await carModel.delete('6254c0411fr4dcc064d02fd1');
+  
+        expect(response).to.be.deep.equal(payload);
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(carModel.model, 'findByIdAndDelete')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+    
+      it('return null', async () => {
+        const response = await carModel.delete('6254c0411954dcc064d02fd1');
   
         expect(response).to.be.equal(null);
       });

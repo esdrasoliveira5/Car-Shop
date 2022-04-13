@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import Controller from '.';
 import CarService from '../services/CarService';
 import { Car } from '../interfaces/CarInterface';
+import { RequestWithBody } from '../interfaces/RequestInterface';
+import { Error } from '../interfaces/ResponseInterfaces';
 
 class CarController extends Controller<Car> {
   private _route: string;
@@ -16,7 +18,8 @@ class CarController extends Controller<Car> {
 
   get route() { return this._route; }
 
-  create = async (req: Request, res: Response): Promise<typeof res> => {
+  create = async (req: RequestWithBody<Car>, res: Response<Car | Error>):
+  Promise<typeof res> => {
     const { body } = req;
     
     const { status, response } = await this.service.create(body);
@@ -24,13 +27,15 @@ class CarController extends Controller<Car> {
     return res.status(status).json(response);
   };
 
-  read = async (_req: Request, res: Response): Promise<typeof res> => {
+  read = async (_req: Request, res: Response<Car[] | Error>):
+  Promise<typeof res> => {
     const { status, response } = await this.service.read();
     
     return res.status(status).json(response);
   };
 
-  readOne = async (req: Request, res: Response): Promise<typeof res> => {
+  readOne = async (req: Request, res: Response<Car | Error>):
+  Promise<typeof res> => {
     const { id } = req.params;
     
     const { status, response } = await this.service.readOne(id);
@@ -38,11 +43,21 @@ class CarController extends Controller<Car> {
     return res.status(status).json(response);
   };
 
-  update = async (req: Request, res: Response): Promise<typeof res> => {
+  update = async (req: RequestWithBody<Car>, res: Response<Car | Error>):
+  Promise<typeof res> => {
     const { id } = req.params;
     const { body } = req;
 
     const { status, response } = await this.service.update(id, body);
+
+    return res.status(status).json(response);
+  };
+
+  delete = async (req: Request, res: Response<[] | Error>):
+  Promise<typeof res> => {
+    const { id } = req.params;
+    
+    const { status, response } = await this.service.delete(id);
 
     return res.status(status).json(response);
   };

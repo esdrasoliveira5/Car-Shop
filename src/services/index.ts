@@ -4,7 +4,7 @@ import {
   ResponseError,
   ResponseRead,
   ResponseReadOne,
-  // ResponseDelete,
+  ResponseDelete,
   ResponseUpdate,
 } from '../interfaces/ResponseInterfaces';
 import Validations from '../validations/Validations';
@@ -23,7 +23,7 @@ abstract class Service<T> {
   abstract update(id: string, obj: T):
   Promise<ResponseUpdate<T> | ResponseError>;
 
-  // abstract delete(id:string): Promise<ResponseDelete<T> | ResponseError>;
+  abstract delete(id:string): Promise<ResponseDelete | ResponseError>;
 }
 
 export default Service;

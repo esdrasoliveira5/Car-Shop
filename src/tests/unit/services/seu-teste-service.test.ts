@@ -246,4 +246,56 @@ describe('2 - Test CarServices', () => {
       });
     });
   });
+  describe.only('2.5 - method delete', () => {
+    describe('if success', () => {
+      const payloadCar = {
+        model: "Ferrari Maranello",
+        year: 1963,
+        color: "red",
+        buyValue: 3500000,
+        seatsQty: 2,
+        doorsQty: 2,
+      };
+
+      before(async () => {
+        sinon
+          .stub(service.model, 'delete')
+          .resolves(payloadCar);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 204 and an object with the car saved in the database', async () => {
+        const response = await service.delete('625605043dbfd06582ad4169');
+
+        expect(response).to.be.deep.equal({ status: 204, response: [] });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(service.model, 'readOne')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
+        const response = await service.delete('4169');
+        
+        expect(response.status).to.be.equal(400);
+        // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
+      });
+      // it('return an object with status 404 and an error message if the db dont find the car with the id', async () => {
+      //   const response = await service.delete('625605043dbfd06582ad4169');
+        
+      //   expect(response.status).to.be.deep.equal(404);
+      //   // expect(response.response).to.be.equal({ error: 'Object not found' });
+      // });
+    });
+  });
 });
