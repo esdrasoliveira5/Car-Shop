@@ -153,6 +153,7 @@ describe('Test the CarController', () => {
     
       before(async () => {
         request.body = payloadCar.response
+        request.params = {id: '123'}
         response.status = sinon.stub().returns(response)
         response.json = sinon.stub()
         
@@ -182,6 +183,7 @@ describe('Test the CarController', () => {
     
       before(async () => {
         request.body = payloadCar.response
+        request.params = {id: '123'}
         response.status = sinon.stub().returns(response)
         response.json = sinon.stub()
         
