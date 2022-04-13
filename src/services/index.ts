@@ -5,31 +5,12 @@ import {
   ResponseRead,
   ResponseReadOne,
   // ResponseDelete,
-  // ResponseUpdate,
+  ResponseUpdate,
 } from '../interfaces/ResponseInterfaces';
-
-enum MesageErrors {
-  internal = 'Internal Server Error',
-  notFound = 'Object not found',
-  requiredId = 'Id is required',
-  badRequest = 'Bad request',
-}
-
-enum StatusCodes {
-  OK = 200,
-  CREATED,
-  NO_CONTENT = 204,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED,
-  NOT_FOUND = 404,
-  INVALID = 422,
-  INTERNAL = 500,
-}
+import Validations from '../validations/Validations';
 
 abstract class Service<T> {
-  protected error = MesageErrors;
-
-  protected status = StatusCodes;
+  protected validation = new Validations();
 
   constructor(public model: Model<T>) {}
 
@@ -39,8 +20,8 @@ abstract class Service<T> {
 
   abstract readOne(id: string): Promise<ResponseReadOne<T> | ResponseError>;
 
-  // abstract update(id: string, obj: T):
-  // Promise<ResponseUpdate<T> | ResponseError>;
+  abstract update(id: string, obj: T):
+  Promise<ResponseUpdate<T> | ResponseError>;
 
   // abstract delete(id:string): Promise<ResponseDelete<T> | ResponseError>;
 }

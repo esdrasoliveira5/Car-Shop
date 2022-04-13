@@ -3,15 +3,14 @@ import * as sinon from 'sinon';
 import chai from 'chai';
 import chaiHttp = require('chai-http');
 import CarModel from '../../../models/CarModel';
-import { Car } from '../../../interfaces/CarInterface';
+const carModel = new CarModel();
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
-describe('Test CarModel', () => {
-  const carModel = new CarModel();
+describe('3 - Test CarModel', () => {
 
-  describe('method create', () => {
+  describe('3.1 - method create', () => {
     describe('if success', () => {
       const payloadCar = {
         model: "Ferrari Maranello",
@@ -20,7 +19,7 @@ describe('Test CarModel', () => {
         buyValue: 3500000,
         seatsQty: 2,
         doorsQty: 2,
-        _id: '123'
+        _id: '6254c0411954dcc064d02fd1'
       }
       before(async () => {
         sinon
@@ -70,7 +69,7 @@ describe('Test CarModel', () => {
       });
     });
   });
-  describe('method read', () => {
+  describe('3.2 - method read', () => {
     describe('if success', () => {
       const payloadCar = [
         {
@@ -126,7 +125,7 @@ describe('Test CarModel', () => {
       });
     });
   });
-  describe('method readOne', () => {
+  describe('3.3 - method readOne', () => {
     describe('if success', () => {
       const payload = {
         model: "Ferrari Maranello",
@@ -135,7 +134,7 @@ describe('Test CarModel', () => {
         buyValue: 3500000,
         seatsQty: 2,
         doorsQty: 2,
-        _id: new Types.ObjectId(),
+        _id: '6254c0411954dcc064d02fd1',
       };
 
       
@@ -170,6 +169,59 @@ describe('Test CarModel', () => {
         const response = await carModel.read();
   
         expect(response).to.be.equal(undefined);
+      });
+    });
+  });
+  describe('3.4 - method update', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Ferrari Maranello",
+        year: 1963,
+        color: "red",
+        buyValue: 3500000,
+        seatsQty: 2,
+        doorsQty: 2,
+      };
+      
+      before(() => {
+        sinon
+          .stub(carModel.model, 'findByIdAndUpdate')
+          .resolves(payload as never);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the car created in the database', async () => {
+        const response = await carModel.update('6254c0411954dcc064d02fd1', payload);
+  
+        expect(response).to.be.deep.equal(payload);
+      });
+    });
+    describe('if fail', () => {
+      const payload = {
+        model: "Ferrari Maranello",
+        year: 1963,
+        color: "red",
+        buyValue: 3500000,
+        seatsQty: 2,
+        doorsQty: 2,
+      };
+      before(async () => {
+        sinon
+          .stub(carModel.model, 'findByIdAndUpdate')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+    
+      it('return undefined', async () => {
+        const response = await carModel.update('6254c0411954dcc064d02fd1', payload);
+  
+        expect(response).to.be.equal(null);
       });
     });
   });

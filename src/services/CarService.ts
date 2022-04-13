@@ -1,12 +1,11 @@
 import Service from '.';
-import { Car, CarSchema } from '../interfaces/CarInterface';
+import { Car } from '../interfaces/CarInterface';
 import {
   ResponseCreate,
   ResponseError,
   ResponseRead,
   ResponseReadOne,
 } from '../interfaces/ResponseInterfaces';
-import { VehicleSchema } from '../interfaces/VehicleInterface';
 import CarModel from '../models/CarModel';
 
 class CarService extends Service<Car> {
@@ -15,54 +14,65 @@ class CarService extends Service<Car> {
   }
 
   create = async (obj: Car): Promise<ResponseCreate<Car> | ResponseError> => {
-    const parsedC = CarSchema.safeParse(obj);
-    const parsedV = VehicleSchema.safeParse(obj);
-    if (!parsedC.success) {
-      return {
-        status: this.status.BAD_REQUEST, response: { error: parsedC.error },
-      };
-    }
-    if (!parsedV.success) {
-      return {
-        status: this.status.BAD_REQUEST, response: { error: parsedV.error },
-      };
-    }
+    const validationVehicle = this.validation.vehicleValidations(obj);
+    if (validationVehicle) return validationVehicle;
+
+    const validationCar = this.validation.carValidations(obj);
+    if (validationCar) return validationCar;
+
     const response = await this.model.create(obj);
     if (response === undefined) {
-      return { status: this.status.INTERNAL,
-        response: { error: this.error.internal } };
+      return { status: this.validation.status.INTERNAL,
+        response: { error: this.validation.error.internal } };
     }
-    return { status: this.status.CREATED, response };
+    return { status: this.validation.status.CREATED, response };
   };
 
   read = async (): Promise<ResponseError | ResponseRead<Car>> => {
     const response = await this.model.read();
     if (response === undefined) {
       return {
-        status: this.status.INTERNAL,
-        response: { error: this.error.internal },
+        status: this.validation.status.INTERNAL,
+        response: { error: this.validation.error.internal },
       };
     }
-    return { status: this.status.OK, response };
+    return { status: this.validation.status.OK, response };
   };
 
   readOne = async (id: string):
   Promise<ResponseError | ResponseReadOne<Car>> => {
-    if (id.length < 24) {
-      return {
-        status: this.status.BAD_REQUEST,
-        response: { error: 'Id must have 24 hexadecimal characters' },
-      };
-    }
-    
+    const validationId = this.validation.idValidations(id);
+    if (validationId) return validationId;
+
     const response = await this.model.readOne(id);
     if (response === null) {
       return { 
-        status: this.status.NOT_FOUND,
-        response: { error: this.error.notFound },
+        status: this.validation.status.NOT_FOUND,
+        response: { error: this.validation.error.notFound },
       };
     }
-    return { status: this.status.OK, response };
+    return { status: this.validation.status.OK, response };
+  };
+
+  update = async (id: string, obj: Car):
+  Promise<ResponseCreate<Car> | ResponseError> => {
+    const validationVehicle = this.validation.vehicleValidations(obj);
+    if (validationVehicle) return validationVehicle;
+
+    const validationCar = this.validation.carValidations(obj);
+    if (validationCar) return validationCar;
+
+    const validationId = this.validation.idValidations(id);
+    if (validationId) return validationId;
+
+    const response = await this.model.update(id, obj);
+    if (response === null) {
+      return {
+        status: this.validation.status.NOT_FOUND,
+        response: { error: this.validation.error.notFound },
+      };
+    }
+    return { status: this.validation.status.OK, response };
   };
 }
 

@@ -37,6 +37,15 @@ class CarController extends Controller<Car> {
 
     return res.status(status).json(response);
   };
+
+  update = async (req: Request, res: Response): Promise<typeof res> => {
+    const { id } = req.params;
+    const { body } = req;
+
+    const { status, response } = await this.service.update(id, body);
+
+    return res.status(status).json(response);
+  };
 }
 
 export default CarController;

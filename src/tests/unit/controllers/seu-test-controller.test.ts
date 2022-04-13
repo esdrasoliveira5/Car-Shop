@@ -7,8 +7,8 @@ const controller = new CarController();
 const request = {} as Request;
 const response = {} as Response;
 
-describe('Test the CarController', () => {
-  describe('method create', () => {
+describe('1 - Test the CarController', () => {
+  describe('1.1 - method create', () => {
     describe('if success', () => {
       const payloadCar = {
         status: 201,
@@ -71,7 +71,7 @@ describe('Test the CarController', () => {
       });
     });
   });
-  describe('method read', () => {
+  describe('1.2 - method read', () => {
     describe('if success', () => {
       const payloadCar = {
         status: 200,
@@ -137,7 +137,7 @@ describe('Test the CarController', () => {
       });
     });
   });
-  describe('method readOne', () => {
+  describe('1.3 - method readOne', () => {
     describe('if success', () => {
       const payloadCar = {
         status: 200,
@@ -198,6 +198,72 @@ describe('Test the CarController', () => {
     
       it('return the status 400', async () => {
         await controller.readOne(request, response);
+         
+        expect((response.status as sinon.SinonStub).calledWith(400))
+      });
+    });
+  });
+  describe('1.4 - method update', () => {
+    describe('if success', () => {
+      const payloadCar = {
+        status: 200,
+        response: {
+          model: "Ferrari Maranello",
+          year: 1963,
+          color: "red",
+          buyValue: 3500000,
+          seatsQty: 2,
+          doorsQty: 2,
+        }
+      }
+    
+      before(async () => {
+        request.body = payloadCar.response
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(controller.service, 'update')
+          .resolves(payloadCar);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 200', async () => {
+        await controller.update(request, response);
+        
+        expect((response.status as sinon.SinonStub).calledWith(200))
+        expect((response.json as sinon.SinonStub).calledWith())
+      });
+    });
+    describe('if fails', () => {
+      const payloadCar = {
+        status: 400,
+        response: {
+          error: "Error",
+        }
+      }
+    
+      before(async () => {
+        request.body = payloadCar.response
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(controller.service, 'update')
+          .resolves(payloadCar);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 400', async () => {
+        await controller.update(request, response);
          
         expect((response.status as sinon.SinonStub).calledWith(400))
       });
