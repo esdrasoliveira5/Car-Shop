@@ -10,6 +10,8 @@ abstract class Controller<T> {
   abstract create(req: Request, res: Response): Promise<typeof res>;
 
   abstract read(req: Request, res: Response): Promise<typeof res>;
+
+  abstract readOne(req: Request, res: Response): Promise<typeof res>;
 }
 
 export default Controller;

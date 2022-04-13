@@ -3,12 +3,12 @@ import {
   ResponseCreate,
   ResponseError,
   ResponseRead,
+  ResponseReadOne,
   // ResponseDelete,
-  // ResponseReadOne,
   // ResponseUpdate,
 } from '../interfaces/ResponseInterfaces';
 
-enum ControllerErrors {
+enum MesageErrors {
   internal = 'Internal Server Error',
   notFound = 'Object not found',
   requiredId = 'Id is required',
@@ -22,12 +22,12 @@ enum StatusCodes {
   BAD_REQUEST = 400,
   UNAUTHORIZED,
   NOT_FOUND = 404,
-  INVALID_FORMAT = 422,
-  INTERNAL_SERVER_ERROR = 500,
+  INVALID = 422,
+  INTERNAL = 500,
 }
 
 abstract class Service<T> {
-  protected error = ControllerErrors;
+  protected error = MesageErrors;
 
   protected status = StatusCodes;
 
@@ -37,7 +37,7 @@ abstract class Service<T> {
 
   abstract read(): Promise<ResponseRead<T> | ResponseError>;
 
-  // abstract readOne(id: string): Promise<ResponseReadOne<T> | ResponseError>;
+  abstract readOne(id: string): Promise<ResponseReadOne<T> | ResponseError>;
 
   // abstract update(id: string, obj: T):
   // Promise<ResponseUpdate<T> | ResponseError>;

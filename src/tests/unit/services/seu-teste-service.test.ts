@@ -130,7 +130,7 @@ describe('Test CarServices', () => {
         buyValue: 3500000,
         seatsQty: 2,
         doorsQty: 2,
-        _id: '123'
+        _id: '625605043dbfd06582ad4169'
       };
 
       before(async () => {
@@ -144,7 +144,7 @@ describe('Test CarServices', () => {
       })
     
       it('return a object with status 200 and an object with the car saved in the database', async () => {
-        const response = await service.readOne('123');
+        const response = await service.readOne(payloadCar._id);
 
         expect(response).to.be.deep.equal({ status: 200, response: payloadCar });
       });
@@ -152,18 +152,25 @@ describe('Test CarServices', () => {
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(service.model, 'read')
-          .resolves(undefined);
+          .stub(service.model, 'readOne')
+          .resolves(null);
       });
     
       after(()=>{
         sinon.restore();
       });
   
-      it('return an object with status 500 and an error message if the db fail to return the cars saved', async () => {
-        const response = await service.readOne('123');
+      it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
+        const response = await service.readOne('4169');
+        
+        expect(response.status).to.be.equal(400);
+        // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
+      });
+      it('return an object with status 404 and an error message if the db dont find the car with the id', async () => {
+        const response = await service.readOne('625246389dbfd06582ad4169');
 
-        expect(response.status).to.be.deep.equal(500);
+        expect(response.status).to.be.deep.equal(404);
+        // expect(response.response).to.be.equal({ error: 'Object not found' });
       });
     });
   });

@@ -18,7 +18,7 @@ class CarController extends Controller<Car> {
 
   create = async (req: Request, res: Response): Promise<typeof res> => {
     const { body } = req;
-
+    
     const { status, response } = await this.service.create(body);
 
     return res.status(status).json(response);
@@ -26,6 +26,14 @@ class CarController extends Controller<Car> {
 
   read = async (_req: Request, res: Response): Promise<typeof res> => {
     const { status, response } = await this.service.read();
+    
+    return res.status(status).json(response);
+  };
+
+  readOne = async (req: Request, res: Response): Promise<typeof res> => {
+    const { id } = req.params;
+    
+    const { status, response } = await this.service.readOne(id);
 
     return res.status(status).json(response);
   };
