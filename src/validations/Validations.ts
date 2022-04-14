@@ -1,4 +1,8 @@
 import { Car, CarSchema } from '../interfaces/CarInterface';
+import {
+  Motorcycle,
+  MotorcycleSchema, 
+} from '../interfaces/MotorcycleInterface';
 import { ResponseError } from '../interfaces/ResponseInterfaces';
 import { VehicleSchema } from '../interfaces/VehicleInterface';
 
@@ -25,7 +29,7 @@ class Validations {
 
   public status = StatusCodes;
 
-  vehicleValidations = (obj: Car): void | ResponseError => {
+  vehicleValidations = (obj: Car | Motorcycle): void | ResponseError => {
     const parsedVehicle = VehicleSchema.safeParse(obj);
     if (!parsedVehicle.success) {
       return {
@@ -44,6 +48,19 @@ class Validations {
       return {
         status: this.status.BAD_REQUEST,
         response: { error: parsedCar.error },
+      };
+    }
+  };
+
+  motorcycleValidations = (obj: Motorcycle): void | ResponseError => {
+    const vehicleValidations = this.vehicleValidations(obj);
+    if (vehicleValidations) return vehicleValidations;
+
+    const parsedMotorcycle = MotorcycleSchema.safeParse(obj);
+    if (!parsedMotorcycle.success) {
+      return {
+        status: this.status.BAD_REQUEST,
+        response: { error: parsedMotorcycle.error },
       };
     }
   };

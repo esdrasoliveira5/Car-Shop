@@ -15,7 +15,7 @@ describe('3 - Test CarModel', () => {
 
   describe('3.1 - method create', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -27,7 +27,7 @@ describe('3 - Test CarModel', () => {
       before(async () => {
         sinon
           .stub(carModel.model, 'create')
-          .resolves(payloadCar);
+          .resolves(payload);
       });
     
       after(()=>{
@@ -44,7 +44,7 @@ describe('3 - Test CarModel', () => {
           doorsQty: 2,
         })
   
-        expect(response).to.be.deep.equal(payloadCar);
+        expect(response).to.be.deep.equal(payload);
       });
     });
     describe('if fail', () => {
@@ -74,7 +74,7 @@ describe('3 - Test CarModel', () => {
   });
   describe('3.2 - method read', () => {
     describe('if success', () => {
-      const payloadCar = [
+      const payload = [
         {
           model: "Ferrari Maranello",
           year: 1963,
@@ -97,7 +97,7 @@ describe('3 - Test CarModel', () => {
       before(async () => {
         sinon
           .stub(carModel.model, 'find')
-          .resolves(payloadCar as never);
+          .resolves(payload as never);
       });
     
       after(()=>{
@@ -107,7 +107,7 @@ describe('3 - Test CarModel', () => {
       it('return the car created in the database', async () => {
         const response = await carModel.read();
   
-        expect(response).to.be.deep.equal(payloadCar);
+        expect(response).to.be.deep.equal(payload);
       });
     });
     describe('if fail', () => {
@@ -282,7 +282,7 @@ describe('4 - Test motorcycleModel', () => {
 
   describe('4.1 - method create', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         _id: "4edd40c86762e0fb12000003",
         model: "Honda CG Titan 125",
         year: 1963,
@@ -294,14 +294,14 @@ describe('4 - Test motorcycleModel', () => {
       before(async () => {
         sinon
           .stub(motorcycleModel.model, 'create')
-          .resolves(payloadCar);
+          .resolves(payload);
       });
     
       after(()=>{
         sinon.restore();
       })
     
-      it('return the car created in the database', async () => {
+      it('return the motorcycle created in the database', async () => {
         const response = await motorcycleModel.create({
           model: "Honda CG Titan 125",
           year: 1963,
@@ -311,7 +311,7 @@ describe('4 - Test motorcycleModel', () => {
           engineCapacity: 125
         })
   
-        expect(response).to.be.deep.equal(payloadCar);
+        expect(response).to.be.deep.equal(payload);
       });
     });
     describe('if fail', () => {
@@ -341,7 +341,7 @@ describe('4 - Test motorcycleModel', () => {
   });
   describe('4.2 - method read', () => {
     describe('if success', () => {
-      const payloadCar = [
+      const payload = [
         {
           model: "Honda CG Titan 125",
           year: 1963,
@@ -364,17 +364,17 @@ describe('4 - Test motorcycleModel', () => {
       before(async () => {
         sinon
           .stub(motorcycleModel.model, 'find')
-          .resolves(payloadCar as never);
+          .resolves(payload as never);
       });
     
       after(()=>{
         sinon.restore();
       })
     
-      it('return the car created in the database', async () => {
+      it('return the motorcycle created in the database', async () => {
         const response = await motorcycleModel.read();
   
-        expect(response).to.be.deep.equal(payloadCar);
+        expect(response).to.be.deep.equal(payload);
       });
     });
     describe('if fail', () => {
@@ -418,7 +418,7 @@ describe('4 - Test motorcycleModel', () => {
         sinon.restore();
       })
     
-      it('return the car created in the database', async () => {
+      it('return the motorcycle created in the database', async () => {
         const response = await motorcycleModel.readOne('123');
   
         expect(response).to.be.deep.equal(payload);
@@ -463,7 +463,7 @@ describe('4 - Test motorcycleModel', () => {
         sinon.restore();
       })
     
-      it('return the car created in the database', async () => {
+      it('return the motorcycle created in the database', async () => {
         const response = await motorcycleModel.update('6254c0411954dcc064d02fd1', payload);
   
         expect(response).to.be.deep.equal(payload);
@@ -518,7 +518,7 @@ describe('4 - Test motorcycleModel', () => {
         sinon.restore();
       })
     
-      it('delete the car created in the database', async () => {
+      it('delete the motorcycle created in the database', async () => {
         const response = await motorcycleModel.delete('6254c0411fr4dcc064d02fd1');
   
         expect(response).to.be.deep.equal(payload);

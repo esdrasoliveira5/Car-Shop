@@ -1,13 +1,16 @@
 import * as sinon from 'sinon';
 import chai from 'chai';
 import CarService from '../../../services/CarService';
+import MotorcycleService from '../../../services/MotorcycleService';
+import { Motorcycle } from '../../../interfaces/MotorcycleInterface';
 const { expect } = chai;
-const service = new CarService();
+const serviceCar = new CarService();
+const serviceMotorcycle = new MotorcycleService();
 
 describe('2 - Test CarServices', () => {
   describe('2.1 - method create', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -18,8 +21,8 @@ describe('2 - Test CarServices', () => {
       }
       before(async () => {
         sinon
-          .stub(service.model, 'create')
-          .resolves(payloadCar);
+          .stub(serviceCar.model, 'create')
+          .resolves(payload);
       });
     
       after(()=>{
@@ -27,7 +30,7 @@ describe('2 - Test CarServices', () => {
       })
     
       it('return a object with status 201 and the car saved in the database', async () => {
-        const response = await service.create({
+        const response = await serviceCar.create({
           model: "Ferrari Maranello",
           year: 1963,
           color: "red",
@@ -35,13 +38,13 @@ describe('2 - Test CarServices', () => {
           seatsQty: 2,
           doorsQty: 2,
         })
-        expect(response).to.be.deep.equal({ status: 201, response: payloadCar });
+        expect(response).to.be.deep.equal({ status: 201, response: payload });
       });
     });
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(service.model, 'create')
+          .stub(serviceCar.model, 'create')
           .resolves(undefined);
       });
     
@@ -50,7 +53,7 @@ describe('2 - Test CarServices', () => {
       });
   
       it('return an object with status 400 and an error message if one of the data is wrong', async () => {
-        const response = await service.create({
+        const response = await serviceCar.create({
           model: "Ferrari Maranello",
           year: 1963,
           color: '',
@@ -61,7 +64,7 @@ describe('2 - Test CarServices', () => {
         expect(response.status).to.be.deep.equal(400);
       });
       it('return an object with status 500 and an error message if the db fail to create a document', async () => {
-        const response = await service.create({
+        const response = await serviceCar.create({
           model: "Ferrari Maranello",
           year: 1963,
           color: 'red',
@@ -75,7 +78,7 @@ describe('2 - Test CarServices', () => {
   });
   describe('2.2 - method read', () => {
     describe('if success', () => {
-      const payloadCar = [
+      const payload = [
         {
           model: "Ferrari Maranello",
           year: 1963,
@@ -89,8 +92,8 @@ describe('2 - Test CarServices', () => {
 
       before(async () => {
         sinon
-          .stub(service.model, 'read')
-          .resolves(payloadCar);
+          .stub(serviceCar.model, 'read')
+          .resolves(payload);
       });
     
       after(()=>{
@@ -98,15 +101,15 @@ describe('2 - Test CarServices', () => {
       })
     
       it('return a object with status 200 and an array with the cars saved in the database', async () => {
-        const response = await service.read();
+        const response = await serviceCar.read();
 
-        expect(response).to.be.deep.equal({ status: 200, response: payloadCar });
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
       });
     });
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(service.model, 'read')
+          .stub(serviceCar.model, 'read')
           .resolves(undefined);
       });
     
@@ -115,7 +118,7 @@ describe('2 - Test CarServices', () => {
       });
   
       it('return an object with status 500 and an error message if the db fail to return the cars saved', async () => {
-        const response = await service.read();
+        const response = await serviceCar.read();
 
         expect(response.status).to.be.deep.equal(500);
       });
@@ -123,7 +126,7 @@ describe('2 - Test CarServices', () => {
   });
   describe('2.3 - method readOne', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -135,8 +138,8 @@ describe('2 - Test CarServices', () => {
 
       before(async () => {
         sinon
-          .stub(service.model, 'readOne')
-          .resolves(payloadCar);
+          .stub(serviceCar.model, 'readOne')
+          .resolves(payload);
       });
     
       after(()=>{
@@ -144,15 +147,15 @@ describe('2 - Test CarServices', () => {
       })
     
       it('return a object with status 200 and an object with the car saved in the database', async () => {
-        const response = await service.readOne(payloadCar._id);
+        const response = await serviceCar.readOne(payload._id);
 
-        expect(response).to.be.deep.equal({ status: 200, response: payloadCar });
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
       });
     });
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(service.model, 'readOne')
+          .stub(serviceCar.model, 'readOne')
           .resolves(null);
       });
     
@@ -161,13 +164,13 @@ describe('2 - Test CarServices', () => {
       });
   
       it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
-        const response = await service.readOne('4169');
+        const response = await serviceCar.readOne('4169');
         
         expect(response.status).to.be.equal(400);
         // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
       });
       it('return an object with status 404 and an error message if the db dont find the car with the id', async () => {
-        const response = await service.readOne('625246389dbfd06582ad4169');
+        const response = await serviceCar.readOne('625246389dbfd06582ad4169');
 
         expect(response.status).to.be.deep.equal(404);
         // expect(response.response).to.be.equal({ error: 'Object not found' });
@@ -176,7 +179,7 @@ describe('2 - Test CarServices', () => {
   });
   describe('2.4 - method update', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -187,8 +190,8 @@ describe('2 - Test CarServices', () => {
 
       before(async () => {
         sinon
-          .stub(service.model, 'update')
-          .resolves(payloadCar);
+          .stub(serviceCar.model, 'update')
+          .resolves(payload);
       });
     
       after(()=>{
@@ -196,13 +199,13 @@ describe('2 - Test CarServices', () => {
       })
     
       it('return a object with status 200 and an object with the car saved in the database', async () => {
-        const response = await service.update('625605043dbfd06582ad4169', payloadCar);
+        const response = await serviceCar.update('625605043dbfd06582ad4169', payload);
 
-        expect(response).to.be.deep.equal({ status: 200, response: payloadCar });
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
       });
     });
     describe('if fail', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -213,7 +216,7 @@ describe('2 - Test CarServices', () => {
       
       before(async () => {
         sinon
-          .stub(service.model, 'update')
+          .stub(serviceCar.model, 'update')
           .resolves(null);
       });
     
@@ -222,13 +225,13 @@ describe('2 - Test CarServices', () => {
       });
   
       it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
-        const response = await service.update('4169', payloadCar);
+        const response = await serviceCar.update('4169', payload);
         
         expect(response.status).to.be.equal(400);
         // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
       });
       it('return an object with status 400 and an error message if one of the data is wrong', async () => {
-        const response = await service.update('625246389dbfd06582ad4169', {
+        const response = await serviceCar.update('625246389dbfd06582ad4169', {
           model: "Ferrari Maranello",
           year: 1963,
           color: '',
@@ -239,7 +242,7 @@ describe('2 - Test CarServices', () => {
         expect(response.status).to.be.deep.equal(400);
       });
       it('return an object with status 404 and an error message if the db dont find the car with the id', async () => {
-        const response = await service.update('625246389dbfd06582ad4169', payloadCar);
+        const response = await serviceCar.update('625246389dbfd06582ad4169', payload);
 
         expect(response.status).to.be.deep.equal(404);
         // expect(response.response).to.be.equal({ error: 'Object not found' });
@@ -248,7 +251,7 @@ describe('2 - Test CarServices', () => {
   });
   describe('2.5 - method delete', () => {
     describe('if success', () => {
-      const payloadCar = {
+      const payload = {
         model: "Ferrari Maranello",
         year: 1963,
         color: "red",
@@ -259,8 +262,8 @@ describe('2 - Test CarServices', () => {
 
       before(async () => {
         sinon
-          .stub(service.model, 'delete')
-          .resolves(payloadCar);
+          .stub(serviceCar.model, 'delete')
+          .resolves(payload);
       });
     
       after(()=>{
@@ -268,7 +271,7 @@ describe('2 - Test CarServices', () => {
       })
     
       it('return a object with status 204 and an object with the car saved in the database', async () => {
-        const response = await service.delete('625605043dbfd06582ad4169');
+        const response = await serviceCar.delete('625605043dbfd06582ad4169');
 
         expect(response).to.be.deep.equal({ status: 204, response: [] });
       });
@@ -276,7 +279,7 @@ describe('2 - Test CarServices', () => {
     describe('if fail', () => {
       before(async () => {
         sinon
-          .stub(service.model, 'readOne')
+          .stub(serviceCar.model, 'readOne')
           .resolves(null);
       });
     
@@ -285,13 +288,333 @@ describe('2 - Test CarServices', () => {
       });
   
       it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
-        const response = await service.delete('4169');
+        const response = await serviceCar.delete('4169');
         
         expect(response.status).to.be.equal(400);
         // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
       });
       // it('return an object with status 404 and an error message if the db dont find the car with the id', async () => {
-      //   const response = await service.delete('625605043dbfd06582ad4169');
+      //   const response = await serviceCar.delete('625605043dbfd06582ad4169');
+        
+      //   expect(response.status).to.be.deep.equal(404);
+      //   // expect(response.response).to.be.equal({ error: 'Object not found' });
+      // });
+    });
+  });
+});
+
+describe('5 - Test MotorcycleService', () => {
+  describe('5.1 - method create', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Honda CG Titan 125",
+        year: 1963,
+        color: "red",
+        buyValue: 3500,
+        category: "Street",
+        engineCapacity: 125,
+        _id: '6254c0411954dcc064d02fd1'
+      }
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'create')
+          .resolves(payload as Motorcycle);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 201 and the motorcycle saved in the database', async () => {
+        const response = await serviceMotorcycle.create({
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        })
+        expect(response).to.be.deep.equal({ status: 201, response: payload });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'create')
+          .resolves(undefined);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if one of the data is wrong', async () => {
+        const response = await serviceMotorcycle.create({
+          model: "Honda CG Titan 125",
+          year: 196300,
+          color: "",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        })
+        expect(response.status).to.be.deep.equal(400);
+      });
+      it('return an object with status 500 and an error message if the db fail to create a document', async () => {
+        const response = await serviceMotorcycle.create({
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        })
+        expect(response.status).to.be.deep.equal(500);
+      });
+    });
+  });
+  describe('5.2 - method read', () => {
+    describe('if success', () => {
+      const payload = [
+        {
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+          _id: '6254c0411954dcc064d02fd1'
+        }
+      ];
+
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'read')
+          .resolves(payload as Motorcycle[]);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 200 and an array with the motorcycles saved in the database', async () => {
+        const response = await serviceMotorcycle.read();
+
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'read')
+          .resolves(undefined);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 500 and an error message if the db fail to return the motorcycles saved', async () => {
+        const response = await serviceMotorcycle.read();
+
+        expect(response.status).to.be.deep.equal(500);
+      });
+    });
+  });
+  describe('5.3 - method readOne', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Honda CG Titan 125",
+        year: 1963,
+        color: "red",
+        buyValue: 3500,
+        category: "Street",
+        engineCapacity: 125,
+        _id: '6254c0411954dcc064d02fd1'
+      };
+
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'readOne')
+          .resolves(payload as Motorcycle);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 200 and an object with the motorcycle saved in the database', async () => {
+        const response = await serviceMotorcycle.readOne(payload._id);
+
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'readOne')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
+        const response = await serviceMotorcycle.readOne('4169');
+        
+        expect(response.status).to.be.equal(400);
+        // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
+      });
+      it('return an object with status 404 and an error message if the db dont find the motorcycle with the id', async () => {
+        const response = await serviceMotorcycle.readOne('6254c0411954dcc064d02fd1');
+
+        expect(response.status).to.be.deep.equal(404);
+        // expect(response.response).to.be.equal({ error: 'Object not found' });
+      });
+    });
+  });
+  describe('5.4 - method update', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Honda CG Titan 125",
+        year: 1963,
+        color: "red",
+        buyValue: 3500,
+        category: "Street",
+        engineCapacity: 125,
+        _id: '6254c0411954dcc064d02fd1'
+      };
+
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'update')
+          .resolves(payload as Motorcycle);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 200 and an object with the motorcycle saved in the database', async () => {
+        const response = await serviceMotorcycle.update('6254c0411954dcc064d02fd1', {
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        });
+
+        expect(response).to.be.deep.equal({ status: 200, response: payload });
+      });
+    });
+    describe('if fail', () => {
+      const payload = {
+        model: "Honda CG Titan 125",
+        year: 1963,
+        color: "red",
+        buyValue: 3500,
+        category: "Street",
+        engineCapacity: 125,
+        _id: '6254c0411954dcc064d02fd1'
+      };
+      
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'update')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
+        const response = await serviceMotorcycle.update('4169', {
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        });
+        
+        expect(response.status).to.be.equal(400);
+        // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
+      });
+      it('return an object with status 400 and an error message if one of the data is wrong', async () => {
+        const response = await serviceMotorcycle.update('6254c0411954dcc064d02fd1', {
+          model: "Honda CG Titan 125",
+          year: 19634857,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 1259898,
+        })
+        expect(response.status).to.be.deep.equal(400);
+      });
+      it('return an object with status 404 and an error message if the db dont find the motorcycle with the id', async () => {
+        const response = await serviceMotorcycle.update('6254c0411954dcc064d02fd1', {
+          model: "Honda CG Titan 125",
+          year: 1963,
+          color: "red",
+          buyValue: 3500,
+          category: "Street",
+          engineCapacity: 125,
+        });
+
+        expect(response.status).to.be.deep.equal(404);
+        // expect(response.response).to.be.equal({ error: 'Object not found' });
+      });
+    });
+  });
+  describe('5.5 - method delete', () => {
+    describe('if success', () => {
+      const payload = {
+        model: "Honda CG Titan 125",
+        year: 1963,
+        color: "red",
+        buyValue: 3500,
+        category: "Street",
+        engineCapacity: 125,
+        _id: '6254c0411954dcc064d02fd1'
+      };
+
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'delete')
+          .resolves(payload as Motorcycle);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return a object with status 204 and an object with the motorcycle saved in the database', async () => {
+        const response = await serviceMotorcycle.delete('6254c0411954dcc064d02fd1');
+
+        expect(response).to.be.deep.equal({ status: 204, response: [] });
+      });
+    });
+    describe('if fail', () => {
+      before(async () => {
+        sinon
+          .stub(serviceMotorcycle.model, 'readOne')
+          .resolves(null);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      });
+  
+      it('return an object with status 400 and an error message if the id dont have 24 characters', async () => {
+        const response = await serviceMotorcycle.delete('4169');
+        
+        expect(response.status).to.be.equal(400);
+        // expect(response.response).to.be.equal({ error: 'Id must have 24 hexadecimal characters' });
+      });
+      // it('return an object with status 404 and an error message if the db dont find the motorcycle with the id', async () => {
+      //   const response = await serviceCar.delete('625605043dbfd06582ad4169');
         
       //   expect(response.status).to.be.deep.equal(404);
       //   // expect(response.response).to.be.equal({ error: 'Object not found' });

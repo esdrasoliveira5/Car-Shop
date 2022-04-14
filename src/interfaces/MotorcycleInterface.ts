@@ -8,7 +8,7 @@ const MotorcycleSchema = z.object({
   engineCapacity: z.number({
     required_error: 'engineCapacity is required',
     invalid_type_error: 'engineCapacity must be a number',
-  }).min(0, { message: 'engineCapacity cannot be less than 0' })
+  }).min(1, { message: 'engineCapacity cannot be less than 0' })
     .max(2500, { message: 'engineCapacity cannot be bigger than 7' }),
 });
 
