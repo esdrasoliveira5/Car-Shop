@@ -4,7 +4,7 @@ import chai from 'chai';
 import CarController from '../../../controllers/CarController';
 import MotorcycleController from '../../../controllers/MotorcycleController';
 import { Motorcycle } from '../../../interfaces/MotorcycleInterface';
-import { ResponseCreate, ResponseRead, ResponseReadOne, ResponseUpdate } from '../../../interfaces/ResponseInterfaces';
+import { ResponseCreate, ResponseDelete, ResponseError, ResponseRead, ResponseReadOne, ResponseUpdate } from '../../../interfaces/ResponseInterfaces';
 const { expect } = chai;
 const carController = new CarController();
 const motorcycleController = new MotorcycleController();
@@ -268,6 +268,64 @@ describe('1 - Test the CarController', () => {
     
       it('return the status 400', async () => {
         await carController.update(request, response);
+         
+        expect((response.status as sinon.SinonStub).calledWith(400))
+      });
+    });
+  });
+  describe('1.5 - method delete', () => {
+    describe('if success', () => {
+      const payload = {
+        status: 200,
+        response: []
+      }
+    
+      before(async () => {
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(carController.service, 'delete')
+          .resolves(payload as ResponseDelete);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 200', async () => {
+        await carController.delete(request, response);
+        
+        expect((response.status as sinon.SinonStub).calledWith(200))
+        expect((response.json as sinon.SinonStub).calledWith())
+      });
+    });
+    describe('if fails', () => {
+      const payload = {
+        status: 400,
+        response: {
+          error: "Error",
+        }
+      }
+    
+      before(async () => {
+        request.body = payload.response
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(carController.service, 'delete')
+          .resolves(payload);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 400', async () => {
+        await carController.delete(request, response);
          
         expect((response.status as sinon.SinonStub).calledWith(400))
       });
@@ -537,6 +595,64 @@ describe('6 - Test the motorcycleController', () => {
     
       it('return the status 400', async () => {
         await carController.update(request, response);
+         
+        expect((response.status as sinon.SinonStub).calledWith(400))
+      });
+    });
+  });
+  describe('6.5 - method delete', () => {
+    describe('if success', () => {
+      const payload = {
+        status: 200,
+        response: []
+      }
+    
+      before(async () => {
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(motorcycleController.service, 'delete')
+          .resolves(payload as ResponseDelete);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 200', async () => {
+        await motorcycleController.delete(request, response);
+        
+        expect((response.status as sinon.SinonStub).calledWith(200))
+        expect((response.json as sinon.SinonStub).calledWith())
+      });
+    });
+    describe('if fails', () => {
+      const payload = {
+        status: 400,
+        response: {
+          error: "Error",
+        }
+      }
+    
+      before(async () => {
+        request.body = payload.response
+        request.params = {id: '123'}
+        response.status = sinon.stub().returns(response)
+        response.json = sinon.stub()
+        
+        sinon
+          .stub(motorcycleController.service, 'delete')
+          .resolves(payload as ResponseError);
+      });
+    
+      after(()=>{
+        sinon.restore();
+      })
+    
+      it('return the status 400', async () => {
+        await motorcycleController.delete(request, response);
          
         expect((response.status as sinon.SinonStub).calledWith(400))
       });
